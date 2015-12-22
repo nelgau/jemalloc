@@ -2429,6 +2429,25 @@ je_nallocx(size_t size, int flags)
 	return (inallocx(size, flags));
 }
 
+JEMALLOC_EXPORT unsigned JEMALLOC_NOTHROW
+JEMALLOC_ATTR(pure)
+je_aallocx(const void *ptr, int flags)
+{
+	arena_t *arena;
+	unsigned ind;
+
+	assert(ptr != NULL);
+	assert(malloc_initialized() || IS_INITIALIZER);
+
+	if (config_ivsalloc)
+		arena = ivaalloc(ptr);
+	else
+		arena = iaalloc(ptr);
+
+	ind = arena->ind;
+	return (ind);
+}
+
 JEMALLOC_EXPORT int JEMALLOC_NOTHROW
 je_mallctl(const char *name, void *oldp, size_t *oldlenp, void *newp,
     size_t newlen)
